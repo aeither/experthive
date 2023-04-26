@@ -21,6 +21,7 @@
     "@trpc/next": "^10.18.0",
     "@trpc/react-query": "^10.18.0",
     "@trpc/server": "^10.18.0",
+    "cids": "^1.1.9",
     "class-variance-authority": "^0.5.3",
     "clsx": "^1.2.1",
     "connectkit": "^1.2.3",

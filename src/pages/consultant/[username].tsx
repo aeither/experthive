@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { MakeDealButton } from "~/components/consultant/make-deal-button";
+import { PieceDeals } from "~/components/consultant/piece-deals";
 
 type PortfolioItem = {
   id: number;
@@ -82,6 +84,8 @@ const UserPage = () => {
         <button className="ml-auto rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
           Book a call
         </button>
+        <MakeDealButton />
+        <PieceDeals />
       </div>
       <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>
       <div className="grid grid-cols-3 gap-4">
