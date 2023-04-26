@@ -18,7 +18,7 @@ const chains = [filecoinHyperspace];
 
 const client = createClient(
   getDefaultClient({
-    appName: "Your App Name",
+    appName: "NowKnown",
     alchemyId,
     chains,
   })
@@ -27,7 +27,7 @@ const client = createClient(
 const WagmiConnectProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <WagmiConfig client={client}>
-      <ConnectKitProvider>
+      <ConnectKitProvider theme="soft">
         {children}
         <ConnectKitButton />
       </ConnectKitProvider>
