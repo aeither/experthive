@@ -1,10 +1,39 @@
+import {
+  ConnectKitButton,
+  ConnectKitProvider,
+  getDefaultClient,
+} from "connectkit";
 import { type AppType } from "next/app";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
+import { WagmiConfig, createClient } from "wagmi";
+import { filecoinHyperspace } from "wagmi/chains";
 import { SiteFooter } from "~/components/shared/site-footer";
 import { SiteHeader } from "~/components/shared/site-header";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
+
+const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+const chains = [filecoinHyperspace];
+
+const client = createClient(
+  getDefaultClient({
+    appName: "Your App Name",
+    alchemyId,
+    chains,
+  })
+);
+
+const WagmiConnectProvider = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <WagmiConfig client={client}>
+      <ConnectKitProvider>
+        {children}
+        <ConnectKitButton />
+      </ConnectKitProvider>
+    </WagmiConfig>
+  );
+};
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -18,11 +47,13 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen w-full flex-col items-center">
-        <SiteHeader />
-        <Component {...pageProps} />
-        <SiteFooter />
-      </main>
+      <WagmiConnectProvider>
+        <main className="flex min-h-screen w-full flex-col items-center">
+          <SiteHeader />
+          <Component {...pageProps} />
+          <SiteFooter />
+        </main>
+      </WagmiConnectProvider>
 
       <Toaster />
     </>
