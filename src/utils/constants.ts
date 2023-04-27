@@ -1,0 +1,1 @@
+export const nowknownAddress = "0x64484dBde84E65e9A31A998A372329EcBD2DE1A2"
