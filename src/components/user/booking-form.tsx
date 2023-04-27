@@ -1,7 +1,8 @@
 import { BigNumber, utils } from "ethers";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useDB } from "~/hooks/use-db";
 import { dealAbi } from "~/lib/dealAbi";
 import { nowknownAbi } from "~/lib/nowknownAbi";
 import { nowknownAddress } from "~/utils/constants";
@@ -12,6 +13,29 @@ type FormData = {
   date: string;
 };
 
+interface RoomResponse {
+  title: string;
+  roomLock: boolean;
+  startTime: string;
+  endTime: string;
+  hostWallets: string[];
+  createdBy: string;
+  roomId: string;
+  roomUrl: string;
+}
+
+const createRoom = async (): Promise<RoomResponse> => {
+  try {
+    const response = await fetch("/api/huddle/create-room");
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 const BookingForm = () => {
   const {
     register,
@@ -19,25 +43,41 @@ const BookingForm = () => {
     formState: { errors },
   } = useForm<FormData>();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { address } = useAccount();
+
+  const { saveBuyCall } = useDB();
 
   const { config, error, isError } = usePrepareContractWrite({
     address: nowknownAddress,
     abi: nowknownAbi,
     functionName: "scheduleCall",
-    args: ["0xConsultant", "0xCustomer"],
+    args: [address || "0xtest", address || "0xtest"],
     overrides: { value: utils.parseEther("0.01") },
   });
 
-  const { data, write } = useContractWrite(config);
+  const { data, writeAsync } = useContractWrite(config);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log(data);
+    const { date, description, title } = data;
 
     // make the payment
-    write && write();
+    if (!writeAsync) return;
+    // await writeAsync();
+
+    // create room
+    const roomData = await createRoom();
 
     // save data to database
-    
+    await saveBuyCall({
+      title,
+      description,
+      date,
+      expert: address || "0xtest",
+      participant: address || "0xtest",
+      room: roomData.roomId,
+      status: "Bought",
+    });
 
     setIsSubmitted(true);
   };

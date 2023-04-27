@@ -1,4 +1,5 @@
 import React from "react";
+import BookingDialog from "~/components/user/booking-dialog";
 
 const User = () => {
   return (
@@ -13,9 +14,7 @@ const User = () => {
           <p className="text-lg font-medium text-gray-800">John Doe</p>
           <p className="text-gray-500">@johndoe</p>
         </div>
-        <button className="ml-auto rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-          Book a call
-        </button>
+        <BookingDialog />
       </div>
       <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>
       <div className="grid grid-cols-3 gap-4">

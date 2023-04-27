@@ -16,7 +16,7 @@ import { Polybase } from "@polybase/client";
 import { PolybaseProvider } from "@polybase/react";
 
 const polybase = new Polybase({
-  defaultNamespace: "test-one",
+  defaultNamespace: "nowknown0123",
 });
 
 const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;

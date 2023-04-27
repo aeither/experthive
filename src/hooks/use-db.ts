@@ -15,7 +15,7 @@ export interface CallData {
   status: string;
 }
 
-export function useCall() {
+export function useDB() {
   const polybase = usePolybase();
   const { address, isConnecting, isDisconnected } = useAccount();
 
@@ -23,7 +23,7 @@ export function useCall() {
     address ? polybase.collection("Call").where("expert", "==", address) : null
   );
 
-  const buyCall = async (props: Omit<CallData, "id">) => {
+  const saveBuyCall = async (props: Omit<CallData, "id">) => {
     const { title, description, date, expert, participant, room, status } =
       props;
     const id = nanoid(16);
@@ -45,11 +45,12 @@ export function useCall() {
         room,
         status,
       ]);
+    console.log("🚀 ~ file: use-db.ts:48 ~ saveBuyCall ~ res:", res);
     return res;
   };
 
   return {
     myCalls: (myCalls.data && myCalls.data.data) || undefined,
-    buyCall,
+    saveBuyCall,
   };
 }

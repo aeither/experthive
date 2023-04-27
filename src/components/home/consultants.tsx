@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Consultants = () => {
@@ -6,10 +7,12 @@ const Consultants = () => {
       <h2 className="mb-8 text-3xl font-bold">Consultants</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {/* Grid items */}
-        <div className="rounded-lg bg-white p-4 shadow-md">
-          <h3 className="mb-2 text-lg font-bold">Consultant 1</h3>
-          <p className="text-gray-500">Description 1</p>
-        </div>
+        <Link href={"/user/nate"}>
+          <div className="rounded-lg bg-white p-4 shadow-md">
+            <h3 className="mb-2 text-lg font-bold">Consultant 1</h3>
+            <p className="text-gray-500">Description 1</p>
+          </div>
+        </Link>
         <div className="rounded-lg bg-white p-4 shadow-md">
           <h3 className="mb-2 text-lg font-bold">Consultant 2</h3>
           <p className="text-gray-500">Description 2</p>
