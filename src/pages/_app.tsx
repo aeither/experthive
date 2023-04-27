@@ -27,10 +27,7 @@ const client = createClient(
 const WagmiConnectProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <WagmiConfig client={client}>
-      <ConnectKitProvider theme="soft">
-        {children}
-        <ConnectKitButton />
-      </ConnectKitProvider>
+      <ConnectKitProvider theme="soft">{children}</ConnectKitProvider>
     </WagmiConfig>
   );
 };
