@@ -32,6 +32,7 @@
     "date-fns": "^2.29.3",
     "ethers": "^5",
     "lucide-react": "^0.181.0",
+    "nanoid": "^4.0.2",
     "next": "^13.2.4",
     "react": "18.2.0",
     "react-day-picker": "^8.7.1",
