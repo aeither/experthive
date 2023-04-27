@@ -1,7 +1,7 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import * as React from "react";
+import { useSigner } from "wagmi";
 import { dealAbi } from "~/lib/dealAbi";
-import { usePrepareContractWrite, useContractWrite, useSigner } from "wagmi";
 const CID = require("cids");
 
 export function MakeDealButton() {

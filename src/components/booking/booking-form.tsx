@@ -1,5 +1,10 @@
-import React, { useState } from "react";
+import { BigNumber, utils } from "ethers";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { dealAbi } from "~/lib/dealAbi";
+import { nowknownAbi } from "~/lib/nowknownAbi";
+import { nowknownAddress } from "~/utils/constants";
 
 type FormData = {
   title: string;
@@ -13,11 +18,27 @@ const BookingForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
-
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const { config, error, isError } = usePrepareContractWrite({
+    address: nowknownAddress,
+    abi: nowknownAbi,
+    functionName: "scheduleCall",
+    args: ["0xConsultant", "0xCustomer"],
+    overrides: { value: utils.parseEther("0.01") },
+  });
+
+  const { data, write } = useContractWrite(config);
 
   const onSubmit = (data: FormData) => {
     console.log(data);
+
+    // make the payment
+    write && write();
+
+    // save data to database
+    
+
     setIsSubmitted(true);
   };
 
