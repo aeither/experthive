@@ -12,6 +12,12 @@ import { SiteFooter } from "~/components/shared/site-footer";
 import { SiteHeader } from "~/components/shared/site-header";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
+import { Polybase } from "@polybase/client";
+import { PolybaseProvider } from "@polybase/react";
+
+const polybase = new Polybase({
+  defaultNamespace: "test-one",
+});
 
 const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 const chains = [filecoinHyperspace];
@@ -44,15 +50,16 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <WagmiConnectProvider>
-        <main className="flex min-h-screen w-full flex-col items-center">
-          <SiteHeader />
-          <Component {...pageProps} />
-          <SiteFooter />
-        </main>
-      </WagmiConnectProvider>
-
-      <Toaster />
+      <PolybaseProvider polybase={polybase}>
+        <WagmiConnectProvider>
+          <main className="flex min-h-screen w-full flex-col items-center">
+            <Toaster />
+            <SiteHeader />
+            <Component {...pageProps} />
+            <SiteFooter />
+          </main>
+        </WagmiConnectProvider>
+      </PolybaseProvider>
     </>
   );
 };

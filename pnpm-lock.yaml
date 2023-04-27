@@ -4,6 +4,12 @@ dependencies:
   '@huddle01/react':
     specifier: ^0.0.9
     version: 0.0.9(@types/react@18.0.28)(mediasoup-client@3.6.84)
+  '@polybase/client':
+    specifier: ^0.5.0
+    version: 0.5.0
+  '@polybase/react':
+    specifier: ^0.5.0
+    version: 0.5.0(@polybase/auth@0.5.0)(@polybase/client@0.5.0)(react@18.2.0)
   '@radix-ui/react-avatar':
     specifier: ^1.0.2
     version: 1.0.2(react-dom@18.2.0)(react@18.2.0)
@@ -1082,6 +1088,59 @@ packages:
       tiny-glob: 0.2.9
       tslib: 2.5.0
     dev: true
+
+  /@polybase/auth@0.5.0:
+    resolution: {integrity: sha512-ri3v4SKMns/cM15RjCJcCtnBoYJRXjQ5r8J+PIxLJ3uKPcLswc/PaiGJTq06iDKENX0u5wcOImlqfDYMJRzU+A==}
+    dependencies:
+      penpal: 6.2.2
+    dev: false
+
+  /@polybase/client@0.5.0:
+    resolution: {integrity: sha512-xOQrLpkwt3xNZxCG48CIh1sFRyYdEORBz8RAV8Km07g5jmc8e2mSpJHPnVO+Sjat/2D+FjVNnqDPsfgTzYjIxw==}
+    dependencies:
+      '@polybase/eth': 0.5.0
+      '@polybase/polylang': 0.4.10
+      axios: 0.27.2
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /@polybase/eth@0.5.0:
+    resolution: {integrity: sha512-0FHsnerLbKIzqK4z9CWrpGWLuvdi86nqgIy2zmuQ9lPM9bHrXcl8rtY+HJ60Rf5hFESpBnSjNPhyWgfbVNgxtg==}
+    dependencies:
+      '@ethersproject/keccak256': 5.7.0
+      '@ethersproject/strings': 5.7.0
+      '@polybase/util': 0.5.0
+    dev: false
+
+  /@polybase/polylang@0.4.10:
+    resolution: {integrity: sha512-CcBGLPXdbIkpdLEblH1ylyfZ82PbjnQc8vz8YPXkrC78U2kMcAeelel812b/eDv3v3uYVPrsCGfqSuUmtXiPOA==}
+    engines: {node: '>=16.0.0'}
+    dev: false
+
+  /@polybase/react@0.5.0(@polybase/auth@0.5.0)(@polybase/client@0.5.0)(react@18.2.0):
+    resolution: {integrity: sha512-p8jmZ2+el3E7eWPGqaU2sY92A5ChrA7fS3KTS1ctlTKWKbhmy585luTb1Y/oQHDbMuLsDu4Le7mmXpKX5M7G9Q==}
+    peerDependencies:
+      '@polybase/auth': '*'
+      '@polybase/client': '*'
+      react: '>=16.8'
+    dependencies:
+      '@polybase/auth': 0.5.0
+      '@polybase/client': 0.5.0
+      react: 18.2.0
+    dev: false
+
+  /@polybase/util@0.5.0:
+    resolution: {integrity: sha512-RXq+PlHhif3LyvBQ+ldUvfSPdkf55LzWBx+9nVcT5A9FFpwoaxvOB+2qmzX3LOAXtJOsy7Pm82k5C1oZgpeujg==}
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/signing-key': 5.7.0
+      elliptic: 6.5.4
+      process: 0.11.10
+      secp256k1: 4.0.3
+      tweetnacl: 1.0.3
+      tweetnacl-util: 0.15.1
+    dev: false
 
   /@radix-ui/primitive@1.0.0:
     resolution: {integrity: sha512-3e7rn8FDMin4CgeL7Z/49smCA3rFYY3Ha2rUQ7HRWFadS5iCRw08ZgVT1LaNTCNqgvrUiyczLflrVrF0SRQtNA==}
@@ -2637,6 +2696,15 @@ packages:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
       follow-redirects: 1.15.2
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /axios@0.27.2:
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
+    dependencies:
+      follow-redirects: 1.15.2
+      form-data: 4.0.0
     transitivePeerDependencies:
       - debug
     dev: false
@@ -4947,6 +5015,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /penpal@6.2.2:
+    resolution: {integrity: sha512-RQD7hTx14/LY7QoS3tQYO3/fzVtwvZI+JeS5udgsu7FPaEDjlvfK9HBcme9/ipzSPKnrxSgacI9PI7154W62YQ==}
+    dev: false
+
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
 
@@ -5158,6 +5230,11 @@ packages:
 
   /process-warning@1.0.0:
     resolution: {integrity: sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==}
+    dev: false
+
+  /process@0.11.10:
+    resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
+    engines: {node: '>= 0.6.0'}
     dev: false
 
   /prop-types@15.8.1:
@@ -5511,6 +5588,16 @@ packages:
   /sdp-transform@2.14.1:
     resolution: {integrity: sha512-RjZyX3nVwJyCuTo5tGPx+PZWkDMCg7oOLpSlhjDdZfwUoNqG1mM8nyj31IGHyaPWXhjbP7cdK3qZ2bmkJ1GzRw==}
     hasBin: true
+    dev: false
+
+  /secp256k1@4.0.3:
+    resolution: {integrity: sha512-NLZVf+ROMxwtEj3Xa562qgv2BK5e2WNmXPiOdVIPLgs6lyTzMvBq0aWTYMI5XCP9jZMVKOcqZLw/Wc4vDkuxhA==}
+    engines: {node: '>=10.0.0'}
+    requiresBuild: true
+    dependencies:
+      elliptic: 6.5.4
+      node-addon-api: 2.0.2
+      node-gyp-build: 4.6.0
     dev: false
 
   /semver@6.3.0:
@@ -5945,6 +6032,14 @@ packages:
       tslib: 1.14.1
       typescript: 5.0.2
     dev: true
+
+  /tweetnacl-util@0.15.1:
+    resolution: {integrity: sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==}
+    dev: false
+
+  /tweetnacl@1.0.3:
+    resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
+    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
