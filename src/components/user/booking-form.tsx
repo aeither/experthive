@@ -61,14 +61,14 @@ const BookingForm = () => {
     console.log(data);
     const { date, description, title } = data;
 
-    // make the payment
+    // make the payment to nowknown contract
     if (!writeAsync) return;
     // await writeAsync();
 
-    // create room
+    // create room on huddle01
     const roomData = await createRoom();
 
-    // save data to database
+    // save data to polybase database
     await saveBuyCall({
       title,
       description,
