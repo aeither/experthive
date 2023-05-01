@@ -8,6 +8,10 @@ import { nowknownAbi } from "~/lib/nowknownAbi";
 import { nowknownAddress } from "~/utils/constants";
 import lighthouse from "@lighthouse-web3/sdk";
 import { toast } from "react-hot-toast";
+import { ethers } from "ethers";
+import { useSignMessage } from "wagmi";
+import { verifyMessage } from "ethers/lib/utils";
+import { Button } from "../ui/button";
 
 type FormData = {
   title: string;
@@ -62,6 +66,17 @@ const PortfolioForm = () => {
   } = useForm<FormData>();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { address } = useAccount();
+  const [signedMessage, setSignedMessage] = useState<string>();
+  const { data, error, isLoading, signMessage, signMessageAsync, variables } =
+    useSignMessage({
+      onSuccess(data, variables) {
+        // Verify signature when sign message succeeds
+        const address = verifyMessage(variables.message, data);
+        setSignedMessage(data as string);
+
+        // recoveredAddress.current = address
+      },
+    });
 
   const progressCallback = (progressData: ProgressData): void => {
     if (!progressData?.total || !progressData.uploaded) return;
@@ -74,23 +89,30 @@ const PortfolioForm = () => {
   const uploadFile = async (
     e: ChangeEvent<HTMLInputElement>
   ): Promise<void> => {
-    const output: Output = await lighthouse.upload(
+    if (!address) return;
+
+    const messageRequested = (await lighthouse.getAuthMessage(address)).data
+      .message;
+    const signedMessage = await signMessageAsync({ message: messageRequested });
+
+    const response = await lighthouse.uploadEncrypted(
       e,
       "dfcfd45c.a142c28524ac4e049453960e0dc2917b",
+      address,
+      signedMessage as string,
       progressCallback
     );
-    console.log(
-      "Visit at https://gateway.lighthouse.storage/ipfs/" + output.data.Hash
-    );
+    console.log(response);
     toast("uploaded successfully");
-    setValue("content", output.data.Hash);
+    // console.log(
+    //   "Visit at https://gateway.lighthouse.storage/ipfs/" + output.data.Hash
+    // );
+    // setValue("content", output.data.Hash);
   };
 
   const onSubmit = async (data: FormData) => {
     console.log(data);
     const { content, description, title } = data;
-
-    
 
     setIsSubmitted(true);
   };
