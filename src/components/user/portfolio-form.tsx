@@ -73,6 +73,7 @@ const PortfolioForm = () => {
         // Verify signature when sign message succeeds
         const address = verifyMessage(variables.message, data);
         setSignedMessage(data as string);
+        setValue("content", data as string);
 
         // recoveredAddress.current = address
       },
@@ -107,7 +108,6 @@ const PortfolioForm = () => {
     // console.log(
     //   "Visit at https://gateway.lighthouse.storage/ipfs/" + output.data.Hash
     // );
-    // setValue("content", output.data.Hash);
   };
 
   const onSubmit = async (data: FormData) => {
@@ -174,24 +174,23 @@ const PortfolioForm = () => {
           </button>
         </form>
       ) : (
-        <BookingSuccess />
+        <PortfolioSuccess />
       )}
     </>
   );
 };
 
-const BookingSuccess = () => {
+const PortfolioSuccess = () => {
   return (
     <div className="flex flex-col items-center justify-center">
-      <img src="/success.png" alt="Success" className="mb-4 h-32 w-32" />
       <p className="mb-4 text-lg font-medium text-gray-800">
-        Your booking has been confirmed!
+        Your file has been uploaded!
       </p>
       <button
         className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         onClick={() => window.location.reload()}
       >
-        Book again
+        Close
       </button>
     </div>
   );
