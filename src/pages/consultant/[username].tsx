@@ -1,6 +1,10 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MakeDealButton } from "~/components/consultant/make-deal-button";
 import { PieceDeals } from "~/components/consultant/piece-deals";
+import PortfolioGrid from "~/components/shared/portfolio-grid";
+import BookingDialog from "~/components/user/booking-dialog";
+import { shortenEthAddress } from "~/lib/utils";
 
 type PortfolioItem = {
   id: number;
@@ -54,6 +58,8 @@ const portfolioItems: PortfolioItem[] = [
 
 const UserPage = () => {
   const [activeCallId, setActiveCallId] = useState<number | null>(null);
+  const router = useRouter();
+  const { username } = router.query;
 
   const handleReject = (id: number) => {
     console.log(`Rejected call with ID ${id}`);
@@ -73,21 +79,22 @@ const UserPage = () => {
     <div className="mx-auto max-w-lg">
       <div className="mb-8 flex items-center">
         <img
-          src="/avatar.png"
+          src="/user_avatar.svg"
           alt="Avatar"
           className="mr-4 h-16 w-16 rounded-full"
         />
-        <div>
-          <p className="text-lg font-medium text-gray-800">John Doe</p>
-          <p className="text-gray-500">@johndoe</p>
+        <div className="flex flex-col items-start gap-2">
+          <p className="text-lg font-medium text-gray-800">
+            {shortenEthAddress(username as string)}
+          </p>
+          {/* <p className="text-gray-500">{username}</p> */}
+          <BookingDialog />
+          <MakeDealButton />
+          <PieceDeals />
         </div>
-        <button className="ml-auto rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-          Book a call
-        </button>
-        <MakeDealButton />
-        <PieceDeals />
       </div>
-      <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>
+
+      <h2 className="mb-4 text-lg font-medium text-gray-800">Calls</h2>
       <div className="grid grid-cols-3 gap-4">
         {portfolioItems.map((item) => (
           <div key={item.id} className="rounded-lg bg-white p-4 shadow-md">
@@ -122,6 +129,8 @@ const UserPage = () => {
           </div>
         ))}
       </div>
+
+      <PortfolioGrid />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,14 +12,15 @@ import BookingForm from "./booking-form";
 const BookingDialog = () => {
   return (
     <Dialog>
-      <DialogTrigger>Open</DialogTrigger>
+      <DialogTrigger>
+        <Button className="bg-blue-500 text-white" variant={"outline"}>
+          Book a call
+        </Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you sure absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Book a call</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <BookingForm />
       </DialogContent>

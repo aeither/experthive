@@ -1,14 +1,11 @@
-import { useRouter } from "next/router";
-import React, { useState } from "react";
-import BookingDialog from "~/components/user/booking-dialog";
-import PortfolioDialog from "~/components/user/portfolio-dialog";
-import { FileData, useDB } from "~/hooks/use-db";
 import lighthouse from "@lighthouse-web3/sdk";
-import { useAccount, useSignMessage } from "wagmi";
 import { verifyMessage } from "ethers/lib/utils";
+import { useRouter } from "next/router";
+import React from "react";
 import toast from "react-hot-toast";
+import { useAccount, useSignMessage } from "wagmi";
 import { Button } from "~/components/ui/button";
-import { shortenEthAddress } from "~/lib/utils";
+import { FileData, useDB } from "~/hooks/use-db";
 
 const FileGridItem = ({ fileData }: { fileData: FileData }) => {
   const { title, hash, signedMessage } = fileData;
@@ -99,35 +96,19 @@ const FileGridItem = ({ fileData }: { fileData: FileData }) => {
   );
 };
 
-const User = () => {
-  const router = useRouter();
-  const { username } = router.query;
+const PortfolioGrid = () => {
   const { myFiles } = useDB();
 
   return (
-    <div className="mx-auto min-h-[calc(100vh-64px)] w-full max-w-lg pt-4">
-      <div className="mb-8 flex items-center">
-        <img
-          src="/user_avatar.svg"
-          alt="Avatar"
-          className="mr-4 h-16 w-16 rounded-full"
-        />
-        <div className="flex flex-col items-start gap-2">
-          <p className="text-lg font-medium text-gray-800">
-            {shortenEthAddress(username as string)}
-          </p>
-          {/* <p className="text-gray-500">{username}</p> */}
-          <PortfolioDialog />
-        </div>
-      </div>
+    <>
       <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>
       <div className="grid grid-cols-3 gap-4">
         {myFiles?.map((file) => (
           <FileGridItem fileData={file.data} />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
-export default User;
+export default PortfolioGrid;

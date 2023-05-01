@@ -26,7 +26,7 @@ export function MainNav() {
         </Link>
         {isConnected && (
           <Link
-            href={`user/${address}`}
+            href={`/user/${address}`}
             className={cn(
               "transition-colors hover:text-foreground/80",
               pathname === "/user" ? "text-foreground" : "text-foreground/60"
