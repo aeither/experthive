@@ -61,4 +61,22 @@ collection Call {
 
   @index([date, desc]);
 }
+
+@public
+collection File {  
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  owner: string;
+
+  constructor (id: string, title: string, description: string, content: string, owner: string) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.content = content;
+    this.owner = owner;
+  }
+
+}
 `;

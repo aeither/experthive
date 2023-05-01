@@ -15,10 +15,42 @@ export interface CallData {
   status: string;
 }
 
+export interface FileData {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  owner: string;
+}
+
 export function useDB() {
   const polybase = usePolybase();
   const { address, isConnecting, isDisconnected } = useAccount();
 
+  /**
+   * File
+   */
+  const myFiles = useCollection<FileData>(
+    address ? polybase.collection("File").where("owner", "==", address) : null
+  );
+  const saveFile = async (props: Omit<FileData, "id">) => {
+    const { title, description, content, owner } = props;
+    const id = nanoid(16);
+
+    if (!address) {
+      toast.error("Please sign in first.");
+      return;
+    }
+
+    const res = await polybase
+      .collection("File")
+      .create([id, title, description, content, owner]);
+    return res;
+  };
+
+  /**
+   * Call
+   */
   const myCalls = useCollection<CallData>(
     address ? polybase.collection("Call").where("expert", "==", address) : null
   );
@@ -45,12 +77,13 @@ export function useDB() {
         room,
         status,
       ]);
-    console.log("🚀 ~ file: use-db.ts:48 ~ saveBuyCall ~ res:", res);
     return res;
   };
 
   return {
     myCalls: (myCalls.data && myCalls.data.data) || undefined,
     saveBuyCall,
+    myFiles: (myFiles.data && myFiles.data.data) || undefined,
+    saveFile,
   };
 }

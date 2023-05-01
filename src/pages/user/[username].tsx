@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import BookingDialog from "~/components/user/booking-dialog";
 import PortfolioDialog from "~/components/user/portfolio-dialog";
+import { useDB } from "~/hooks/use-db";
 
 function shortenEthAddress(address: string) {
   if (!address || address.length < 10) {
@@ -13,6 +14,7 @@ function shortenEthAddress(address: string) {
 const User = () => {
   const router = useRouter();
   const { username } = router.query;
+  const { myFiles } = useDB();
 
   return (
     <div className="mx-auto min-h-[calc(100vh-64px)] w-full max-w-lg pt-4">
@@ -22,7 +24,7 @@ const User = () => {
           alt="Avatar"
           className="mr-4 h-16 w-16 rounded-full"
         />
-        <div className="flex flex-col gap-2 items-start">
+        <div className="flex flex-col items-start gap-2">
           <p className="text-lg font-medium text-gray-800">
             {shortenEthAddress(username as string)}
           </p>
@@ -32,12 +34,11 @@ const User = () => {
       </div>
       <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>
       <div className="grid grid-cols-3 gap-4">
-        <img src="/image1.png" alt="Image 1" className="w-full" />
-        <img src="/image2.png" alt="Image 2" className="w-full" />
-        <img src="/image3.png" alt="Image 3" className="w-full" />
-        <img src="/image4.png" alt="Image 4" className="w-full" />
-        <img src="/image5.png" alt="Image 5" className="w-full" />
-        <img src="/image6.png" alt="Image 6" className="w-full" />
+        {myFiles?.map((file) => (
+          <div className="flex w-full rounded-lg border p-4 hover:shadow">
+            {file.data.title}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -66,6 +66,7 @@ const PortfolioForm = () => {
   } = useForm<FormData>();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { address } = useAccount();
+  const { saveFile } = useDB();
   const [signedMessage, setSignedMessage] = useState<string>();
   const { data, error, isLoading, signMessage, signMessageAsync, variables } =
     useSignMessage({
@@ -111,8 +112,21 @@ const PortfolioForm = () => {
   };
 
   const onSubmit = async (data: FormData) => {
+    if (!address) {
+      toast("sign in first");
+      return;
+    }
     console.log(data);
+
     const { content, description, title } = data;
+
+    // save data to polybase database
+    await saveFile({
+      title,
+      description,
+      content: content,
+      owner: address,
+    });
 
     setIsSubmitted(true);
   };
