@@ -16,7 +16,8 @@ import { Button } from "../ui/button";
 type FormData = {
   title: string;
   description: string;
-  content: string;
+  signedMessage: string;
+  hash: string;
 };
 
 interface RoomResponse {
@@ -74,7 +75,7 @@ const PortfolioForm = () => {
         // Verify signature when sign message succeeds
         const address = verifyMessage(variables.message, data);
         setSignedMessage(data as string);
-        setValue("content", data as string);
+        setValue("signedMessage", data as string);
 
         // recoveredAddress.current = address
       },
@@ -97,14 +98,18 @@ const PortfolioForm = () => {
       .message;
     const signedMessage = await signMessageAsync({ message: messageRequested });
 
-    const response = await lighthouse.uploadEncrypted(
+    /**
+     * upload file and get hash(cid)
+     */
+    const response: Output = await lighthouse.uploadEncrypted(
       e,
-      "dfcfd45c.a142c28524ac4e049453960e0dc2917b",
+      "dfcfd45c.a142c28524ac4e049453960e0dc2917b", // AK
       address,
       signedMessage as string,
       progressCallback
     );
     console.log(response);
+    setValue("hash", response.data.Hash);
     toast("uploaded successfully");
     // console.log(
     //   "Visit at https://gateway.lighthouse.storage/ipfs/" + output.data.Hash
@@ -118,13 +123,14 @@ const PortfolioForm = () => {
     }
     console.log(data);
 
-    const { content, description, title } = data;
+    const { hash, signedMessage, description, title } = data;
 
     // save data to polybase database
     await saveFile({
       title,
       description,
-      content: content,
+      signedMessage: signedMessage,
+      hash: hash,
       owner: address,
     });
 
@@ -170,13 +176,13 @@ const PortfolioForm = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="date" className="mb-2 block font-medium">
-              Content
+              File
             </label>
             <input
               onChange={(e: ChangeEvent<HTMLInputElement>) => uploadFile(e)}
               type="file"
             />
-            {errors.content && (
+            {errors.hash && (
               <p className="mt-1 text-sm text-red-500">Date is required</p>
             )}
           </div>

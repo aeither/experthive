@@ -67,14 +67,16 @@ collection File {
   id: string;
   title: string;
   description: string;
-  content: string;
+  signedMessage: string;
+  hash: string;
   owner: string;
 
-  constructor (id: string, title: string, description: string, content: string, owner: string) {
+  constructor (id: string, title: string, description: string, signedMessage: string, hash: string, owner: string) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.content = content;
+    this.signedMessage = signedMessage;
+    this.hash = hash;
     this.owner = owner;
   }
 
