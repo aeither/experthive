@@ -3,7 +3,7 @@ import BookingDialog from "~/components/user/booking-dialog";
 
 const User = () => {
   return (
-    <div className="mx-auto max-w-lg">
+    <div className="mx-auto min-h-[calc(100vh-64px)] w-full max-w-lg pt-4">
       <div className="mb-8 flex items-center">
         <img
           src="/avatar.png"

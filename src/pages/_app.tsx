@@ -14,6 +14,7 @@ import "~/styles/globals.css";
 import { api } from "~/utils/api";
 import { Polybase } from "@polybase/client";
 import { PolybaseProvider } from "@polybase/react";
+import ClientOnly from "~/components/shared/client-only";
 
 const polybase = new Polybase({
   defaultNamespace: "nowknown0123",
@@ -50,16 +51,18 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <PolybaseProvider polybase={polybase}>
-        <WagmiConnectProvider>
-          <main className="flex min-h-screen w-full flex-col items-center">
-            <Toaster />
-            <SiteHeader />
-            <Component {...pageProps} />
-            <SiteFooter />
-          </main>
-        </WagmiConnectProvider>
-      </PolybaseProvider>
+      <ClientOnly>
+        <PolybaseProvider polybase={polybase}>
+          <WagmiConnectProvider>
+            <main className="flex min-h-screen w-full flex-col items-center">
+              <Toaster />
+              <SiteHeader />
+              <Component {...pageProps} />
+              <SiteFooter />
+            </main>
+          </WagmiConnectProvider>
+        </PolybaseProvider>
+      </ClientOnly>
     </>
   );
 };

@@ -6,6 +6,7 @@ import { useDB } from "~/hooks/use-db";
 import { dealAbi } from "~/lib/dealAbi";
 import { nowknownAbi } from "~/lib/nowknownAbi";
 import { nowknownAddress } from "~/utils/constants";
+import lighthouse from "@lighthouse-web3/sdk";
 
 type FormData = {
   title: string;
@@ -23,6 +24,11 @@ interface RoomResponse {
   roomId: string;
   roomUrl: string;
 }
+
+type ProgressData = {
+  total: number;
+  uploaded: number;
+};
 
 const createRoom = async (): Promise<RoomResponse> => {
   try {
@@ -56,6 +62,33 @@ const BookingForm = () => {
   });
 
   const { data, writeAsync } = useContractWrite(config);
+
+  const progressCallback = (progressData: ProgressData): void => {
+    if (!progressData?.total || !progressData.uploaded) return;
+    const progress =
+      (progressData.total as number) / (progressData.uploaded as number);
+    let percentageDone = 100 - +progress.toFixed(2);
+    console.log(percentageDone);
+  };
+
+  const uploadFile = async (e: File): Promise<void> => {
+    // Push file to lighthouse node
+    // Both file and folder are supported by upload function
+    const output = await lighthouse.upload(e, "YOUR_API_KEY", progressCallback);
+    console.log("File Status:", output);
+    /*
+      output:
+        data: {
+          Name: "filename.txt",
+          Size: 88000,
+          Hash: "QmWNmn2gr4ZihNPqaC5oTeePsHvFtkWNpjY3cD6Fd5am1w"
+        }
+      Note: Hash in response is CID.
+    */
+    console.log(
+      "Visit at https://gateway.lighthouse.storage/ipfs/" + output.data.Hash
+    );
+  };
 
   const onSubmit = async (data: FormData) => {
     console.log(data);
@@ -139,7 +172,7 @@ const BookingForm = () => {
             type="submit"
             className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
           >
-            Book now
+            Upload
           </button>
         </form>
       ) : (
