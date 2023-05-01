@@ -12,8 +12,8 @@ export function SiteFooter() {
               className="font-medium underline underline-offset-4"
             >
               FVM
-            </a>
-            {" "}and{" "}
+            </a>{" "}
+            and{" "}
             <a
               href={"https://example.com"}
               target="_blank"
@@ -21,15 +21,6 @@ export function SiteFooter() {
               className="font-medium underline underline-offset-4"
             >
               Huddle01
-            </a>
-            . The source code is available on{" "}
-            <a
-              href={"https://example.com"}
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              GitHub
             </a>
             .
           </p>
