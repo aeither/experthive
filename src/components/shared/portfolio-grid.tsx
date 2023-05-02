@@ -1,11 +1,11 @@
 import lighthouse from "@lighthouse-web3/sdk";
+import { CollectionRecordResponse } from "@polybase/client";
 import { verifyMessage } from "ethers/lib/utils";
-import { useRouter } from "next/router";
 import React from "react";
 import toast from "react-hot-toast";
 import { useAccount, useSignMessage } from "wagmi";
 import { Button } from "~/components/ui/button";
-import { FileData, useDB } from "~/hooks/use-db";
+import { FileData } from "~/hooks/use-db";
 
 const FileGridItem = ({ fileData }: { fileData: FileData }) => {
   const { title, hash, signedMessage } = fileData;
@@ -96,14 +96,16 @@ const FileGridItem = ({ fileData }: { fileData: FileData }) => {
   );
 };
 
-const PortfolioGrid = () => {
-  const { myFiles } = useDB();
-
+const PortfolioGrid = ({
+  files,
+}: {
+  files: CollectionRecordResponse<FileData>[] | undefined;
+}) => {
   return (
     <>
       <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>
       <div className="grid grid-cols-3 gap-4">
-        {myFiles?.map((file) => (
+        {files?.map((file) => (
           <FileGridItem fileData={file.data} />
         ))}
       </div>

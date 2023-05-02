@@ -7,6 +7,7 @@ import { dealAbi } from "~/lib/dealAbi";
 import { nowknownAbi } from "~/lib/nowknownAbi";
 import { nowknownAddress } from "~/utils/constants";
 import lighthouse from "@lighthouse-web3/sdk";
+import Link from "next/link";
 
 type FormData = {
   title: string;
@@ -50,6 +51,7 @@ const BookingForm = () => {
   } = useForm<FormData>();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { address } = useAccount();
+  const [roomId, setRoomId] = useState<string>();
 
   const { saveBuyCall } = useDB();
 
@@ -96,7 +98,7 @@ const BookingForm = () => {
 
     // make the payment to nowknown contract
     if (!writeAsync) return;
-    // await writeAsync();
+    await writeAsync();
 
     // create room on huddle01
     const roomData = await createRoom();
@@ -112,6 +114,7 @@ const BookingForm = () => {
       status: "Bought",
     });
 
+    setRoomId(roomData.roomId);
     setIsSubmitted(true);
   };
 
@@ -176,24 +179,32 @@ const BookingForm = () => {
           </button>
         </form>
       ) : (
-        <BookingSuccess />
+        <BookingSuccess roomId={roomId || ""} />
       )}
     </>
   );
 };
 
-const BookingSuccess = () => {
+const BookingSuccess = ({ roomId }: { roomId: string }) => {
   return (
     <div className="flex flex-col items-center justify-center">
-      <img src="/success.png" alt="Success" className="mb-4 h-32 w-32" />
+      <img src="/images/success.png" alt="Success" className="mb-4 h-32 w-32" />
       <p className="mb-4 text-lg font-medium text-gray-800">
         Your booking has been confirmed!
       </p>
+      <Link href={`/rec/${roomId}`}>
+        <button
+          className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          onClick={() => window.location.reload()}
+        >
+          Close
+        </button>
+      </Link>
       <button
         className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         onClick={() => window.location.reload()}
       >
-        Book again
+        Close
       </button>
     </div>
   );
