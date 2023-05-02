@@ -31,6 +31,11 @@ const FileGridItem = ({ fileData }: { fileData: FileData }) => {
     }
 
     /**
+     * Check if unlocked, if not. pay to contract which and wait
+     */
+    // fileData.
+
+    /**
      * Get Signed Message
      */
     const messageRequested = (await lighthouse.getAuthMessage(address)).data
@@ -103,7 +108,7 @@ const PortfolioGrid = ({
 }) => {
   return (
     <>
-      <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>
+      <h2 className="mb-4 text-lg font-medium text-gray-800">Resources</h2>
       <div className="grid grid-cols-3 gap-4">
         {files?.map((file) => (
           <FileGridItem fileData={file.data} />

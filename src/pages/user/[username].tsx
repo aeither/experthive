@@ -212,6 +212,22 @@ const User = () => {
           ))}
       </div>
 
+      <h2 className="mb-4 text-lg font-medium text-gray-800">Requests</h2>
+      <div className="grid grid-cols-3 gap-4">
+        <Button
+          onClick={async () => {
+            const response = await lighthouse.shareFile(
+              publicKeyOfOwner,
+              [publicKeyUserB],
+              cid,
+              signedMessage
+            );
+          }}
+        >
+          Share
+        </Button>
+      </div>
+
       <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>
       <div className="grid grid-cols-3 gap-4">
         {myFiles?.map((file) => (

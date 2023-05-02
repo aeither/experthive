@@ -70,6 +70,7 @@ collection File {
   signedMessage: string;
   hash: string;
   owner: string;
+  users: string[];
 
   constructor (id: string, title: string, description: string, signedMessage: string, hash: string, owner: string) {
     this.id = id;
@@ -78,7 +79,11 @@ collection File {
     this.signedMessage = signedMessage;
     this.hash = hash;
     this.owner = owner;
+    this.users = [owner];
   }
 
+  function addUser (user: string) {
+    this.users.push(user);
+  }
 }
 `;
