@@ -1,9 +1,13 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MakeDealButton } from "~/components/consultant/make-deal-button";
 import { PieceDeals } from "~/components/consultant/piece-deals";
 import PortfolioGrid from "~/components/shared/portfolio-grid";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import BookingDialog from "~/components/user/booking-dialog";
+import { useDB } from "~/hooks/use-db";
 import { shortenEthAddress } from "~/lib/utils";
 
 type PortfolioItem = {
@@ -57,20 +61,22 @@ const portfolioItems: PortfolioItem[] = [
 ];
 
 const UserPage = () => {
-  const [activeCallId, setActiveCallId] = useState<number | null>(null);
+  const [activeCallId, setActiveCallId] = useState<string | null>(null);
   const router = useRouter();
   const { username } = router.query;
+  const { myCalls } = useDB();
+  console.log("🚀 ~ file: [username].tsx:65 ~ UserPage ~ myCalls:", myCalls);
 
-  const handleReject = (id: number) => {
+  const handleReject = (id: string) => {
     console.log(`Rejected call with ID ${id}`);
   };
 
-  const handleStartCall = (id: number) => {
+  const handleStartCall = (id: string) => {
     console.log(`Started call with ID ${id}`);
     setActiveCallId(id);
   };
 
-  const handleCompleteCall = (id: number) => {
+  const handleCompleteCall = (id: string) => {
     console.log(`Completed call with ID ${id}`);
     setActiveCallId(null);
   };
@@ -95,39 +101,52 @@ const UserPage = () => {
       </div>
 
       <h2 className="mb-4 text-lg font-medium text-gray-800">Calls</h2>
-      <div className="grid grid-cols-3 gap-4">
-        {portfolioItems.map((item) => (
-          <div key={item.id} className="rounded-lg bg-white p-4 shadow-md">
-            <img src={item.image} alt={item.title} className="mb-4 w-full" />
-            <h3 className="mb-2 text-lg font-medium text-gray-800">
-              {item.title}
-            </h3>
-            <p className="mb-4 text-gray-500">{item.description}</p>
-            {activeCallId !== item.id ? (
-              <div className="flex">
-                <button
-                  className="mr-2 rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-                  onClick={() => handleReject(item.id)}
-                >
-                  Reject
-                </button>
-                <button
-                  className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                  onClick={() => handleStartCall(item.id)}
-                >
-                  Start call
-                </button>
+      <div className="grid grid-cols-2 gap-4 pb-4">
+        {myCalls &&
+          myCalls.map((item) => (
+            <div
+              key={item.data.id}
+              className="flex w-full flex-col rounded-lg border bg-white p-4 hover:shadow-md"
+            >
+              <div>
+                <Badge variant="outline">{item.data.status}</Badge>
               </div>
-            ) : (
-              <button
-                className="rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-                onClick={() => handleCompleteCall(item.id)}
-              >
-                Complete call
-              </button>
-            )}
-          </div>
-        ))}
+
+              <h3 className="mb-2 text-lg font-medium text-gray-800">
+                {item.data.title}
+              </h3>
+              <p className="text-gray-500">{item.data.room}</p>
+              <p className="text-gray-600">{item.data.date}</p>
+              <p className="mb-4 text-gray-600">{item.data.description}</p>
+              {activeCallId !== item.data.id ? (
+                <div className="flex w-full flex-col gap-2">
+                  <Button
+                    variant={"destructive"}
+                    onClick={() => handleReject(item.data.id)}
+                  >
+                    Reject
+                  </Button>
+                  <div className="flex w-full">
+                    <Link className="w-full" href={`/rec/${item.data.room}`}>
+                      <Button
+                        className="w-full"
+                        // onClick={() => handleStartCall(item.data.room)}
+                      >
+                        Start
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  variant={"destructive"}
+                  onClick={() => handleCompleteCall(item.data.id)}
+                >
+                  Complete
+                </Button>
+              )}
+            </div>
+          ))}
       </div>
 
       <PortfolioGrid />
