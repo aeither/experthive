@@ -1,8 +1,4 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
-import { useAccount } from "wagmi";
-import PortfolioGrid from "../shared/portfolio-grid";
 
 function renderStars(numStars: number) {
   const stars = [];
@@ -37,7 +33,7 @@ const Consultants = () => {
     <div className="container mx-auto flex flex-col px-4 pt-4">
       <h2 className="mb-8 text-3xl font-bold">Consultants</h2>
       <div className="grid grid-cols-1 flex-wrap gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <div className="flex h-full flex-col rounded-lg bg-white p-4 shadow-md">
+        <div className="flex h-full flex-col rounded-lg bg-white p-4 shadow-md hover:shadow-lg">
           <Link href={`/consultant/0x5052936D3c98d2d045da4995d37B0DaE80C6F07f`}>
             <h3 className="mb-2 text-lg font-bold">Maya Singh Patel</h3>
             <div className="flex">{renderStars(5)}</div>

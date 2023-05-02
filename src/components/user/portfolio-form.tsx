@@ -132,6 +132,7 @@ const PortfolioForm = () => {
       signedMessage: signedMessage,
       hash: hash,
       owner: address,
+      users: [address],
     });
 
     setIsSubmitted(true);

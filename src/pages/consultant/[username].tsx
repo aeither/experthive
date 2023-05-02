@@ -1,13 +1,10 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { MakeDealButton } from "~/components/consultant/make-deal-button";
 import { PieceDeals } from "~/components/consultant/piece-deals";
 import PortfolioGrid from "~/components/shared/portfolio-grid";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
 import BookingDialog from "~/components/user/booking-dialog";
-import { useDB, useDBByAddress } from "~/hooks/use-db";
+import { useDBByAddress } from "~/hooks/use-db";
 import { shortenEthAddress } from "~/lib/utils";
 
 type PortfolioItem = {
@@ -56,7 +53,7 @@ const ConsultantPage = () => {
         </div>
       </div>
 
-      <PortfolioGrid files={myFiles} />
+      <PortfolioGrid expert={username as string} files={myFiles} />
     </div>
   );
 };

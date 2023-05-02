@@ -1,4 +1,5 @@
 import lighthouse from "@lighthouse-web3/sdk";
+import { usePolybase } from "@polybase/react";
 import { utils } from "ethers";
 import { verifyMessage } from "ethers/lib/utils";
 import Link from "next/link";
@@ -112,8 +113,9 @@ const FileGridItem = ({ fileData }: { fileData: FileData }) => {
 const User = () => {
   const router = useRouter();
   const { username } = router.query;
-  const { myFiles, myCalls } = useDB();
+  const { myFiles, myCalls, myRequests } = useDB();
   const { address } = useAccount();
+  const polybase = usePolybase();
 
   const { data } = useContractRead({
     address: nowknownAddress,
@@ -129,10 +131,6 @@ const User = () => {
     args: [address || "0xtest", address || "0xtest"],
   });
   const { writeAsync } = useContractWrite(config);
-
-  console.log("🚀 ~ file: [username].tsx:110 ~ User ~ address:", address);
-  console.log("🚀 ~ file: [username].tsx:117 ~ User ~ data:", data);
-
   const handleReject = (id: string) => {
     console.log(`Rejected call with ID ${id}`);
   };
@@ -214,18 +212,48 @@ const User = () => {
 
       <h2 className="mb-4 text-lg font-medium text-gray-800">Requests</h2>
       <div className="grid grid-cols-3 gap-4">
-        <Button
-          onClick={async () => {
-            const response = await lighthouse.shareFile(
-              publicKeyOfOwner,
-              [publicKeyUserB],
-              cid,
-              signedMessage
-            );
-          }}
-        >
-          Share
-        </Button>
+        {myRequests &&
+          myRequests.map((item) => (
+            <>
+              <div
+                key={item.data.id}
+                className="flex w-full flex-col rounded-lg border bg-white p-4 hover:shadow-md"
+              >
+                <h3 className="mb-2 text-lg font-medium text-gray-800">
+                  {item.data.user}
+                </h3>
+
+                <div className="flex w-full flex-col gap-2">
+                  <div className="flex w-full">
+                    <Button
+                      className="w-full"
+                      onClick={async () => {
+                        const res = await lighthouse.shareFile(
+                          item.data.owner,
+                          [item.data.user],
+                          item.data.hash,
+                          item.data.signedMessage
+                        );
+
+                        // await polybase
+                        //   .collection("Request")
+                        //   .record(item.data.id)
+                        //   .call("", [
+                        //     getAddressFromPublicKey(publicKey),
+                        //   ]);
+                        console.log(
+                          "🚀 ~ file: [username].tsx:235 ~ onClick={ ~ res:",
+                          res
+                        );
+                      }}
+                    >
+                      Share
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          ))}
       </div>
 
       <h2 className="mb-4 text-lg font-medium text-gray-800">Portfolio</h2>

@@ -22,6 +22,15 @@ export interface FileData {
   signedMessage: string;
   hash: string;
   owner: string;
+  users: string[];
+}
+
+export interface RequestData {
+  id: string;
+  owner: string;
+  user: string;
+  hash: string;
+  signedMessage: string;
 }
 
 export function useDBByAddress(address: string) {
@@ -98,7 +107,7 @@ export function useDB() {
   const myFiles = useCollection<FileData>(
     address ? polybase.collection("File").where("owner", "==", address) : null
   );
-  
+
   const saveFile = async (props: Omit<FileData, "id">) => {
     const { title, description, signedMessage, hash, owner } = props;
     const id = nanoid(16);
@@ -146,9 +155,35 @@ export function useDB() {
     return res;
   };
 
+  /**
+   * Request
+   */
+  const myRequests = useCollection<RequestData>(
+    address
+      ? polybase.collection("Request").where("owner", "==", address)
+      : null
+  );
+
+  const buyResource = async (props: Omit<RequestData, "id">) => {
+    const { hash, owner, signedMessage, user } = props;
+    const id = nanoid(16);
+
+    if (!address) {
+      toast.error("Please sign in first to purchase the service.");
+      return;
+    }
+
+    const res = await polybase
+      .collection("Request")
+      .create([id, owner, user, hash, signedMessage]);
+    return res;
+  };
+
   return {
     myCalls: (myCalls.data && myCalls.data.data) || undefined,
     saveBuyCall,
+    myRequests: myRequests.data?.data || undefined,
+    buyResource,
     myFiles: (myFiles.data && myFiles.data.data) || undefined,
     saveFile,
   };

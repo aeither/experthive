@@ -63,6 +63,23 @@ collection Call {
 }
 
 @public
+collection Request {  
+  id: string;
+  owner: string;
+  user: string;
+  hash: string;
+  signedMessage: string;
+
+  constructor (id: string, owner: string, user: string, hash: string, signedMessage: string) {
+    this.id = id;
+    this.owner = owner;
+    this.user = user;
+    this.hash = hash;
+    this.signedMessage = signedMessage;
+  }
+}
+
+@public
 collection File {  
   id: string;
   title: string;

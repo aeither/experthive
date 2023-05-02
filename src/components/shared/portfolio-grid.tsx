@@ -1,17 +1,42 @@
 import lighthouse from "@lighthouse-web3/sdk";
 import { CollectionRecordResponse } from "@polybase/client";
+import { utils } from "ethers";
 import { verifyMessage } from "ethers/lib/utils";
 import React from "react";
 import toast from "react-hot-toast";
-import { useAccount, useSignMessage } from "wagmi";
+import {
+  useAccount,
+  useContractWrite,
+  usePrepareContractWrite,
+  useSignMessage,
+} from "wagmi";
 import { Button } from "~/components/ui/button";
-import { FileData } from "~/hooks/use-db";
+import { FileData, useDB } from "~/hooks/use-db";
+import { nowknownAbi } from "~/lib/nowknownAbi";
+import { nowknownAddress } from "~/utils/constants";
 
-const FileGridItem = ({ fileData }: { fileData: FileData }) => {
+const FileGridItem = ({
+  fileData,
+  expert,
+}: {
+  fileData: FileData;
+  expert: string;
+}) => {
   const { title, hash, signedMessage } = fileData;
 
   const [fileURL, setFileURL] = React.useState<string | null>(null);
   const { address } = useAccount();
+  const { buyResource } = useDB();
+
+  const { config } = usePrepareContractWrite({
+    address: nowknownAddress,
+    abi: nowknownAbi,
+    functionName: "scheduleCall",
+    args: [(expert as `0x${string}`) || "0xtest", address || "0xtest"],
+    overrides: { value: utils.parseEther("0.01") },
+  });
+
+  const { writeAsync } = useContractWrite(config);
 
   const { data, error, isLoading, signMessage, signMessageAsync, variables } =
     useSignMessage({
@@ -33,7 +58,22 @@ const FileGridItem = ({ fileData }: { fileData: FileData }) => {
     /**
      * Check if unlocked, if not. pay to contract which and wait
      */
-    // fileData.
+    if (!fileData.users.includes(address)) {
+      // pay contract
+      if (!writeAsync) return;
+      await writeAsync();
+
+      // create new request item to db with status pending
+      await buyResource({
+        hash: fileData.hash,
+        owner: fileData.owner,
+        signedMessage: fileData.signedMessage,
+        user: address,
+      });
+
+      toast("Resource Requested");
+      return;
+    }
 
     /**
      * Get Signed Message
@@ -103,15 +143,17 @@ const FileGridItem = ({ fileData }: { fileData: FileData }) => {
 
 const PortfolioGrid = ({
   files,
+  expert,
 }: {
   files: CollectionRecordResponse<FileData>[] | undefined;
+  expert: string;
 }) => {
   return (
     <>
       <h2 className="mb-4 text-lg font-medium text-gray-800">Resources</h2>
       <div className="grid grid-cols-3 gap-4">
         {files?.map((file) => (
-          <FileGridItem fileData={file.data} />
+          <FileGridItem expert={expert} fileData={file.data} />
         ))}
       </div>
     </>
