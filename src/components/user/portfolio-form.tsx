@@ -110,7 +110,7 @@ const PortfolioForm = () => {
     );
     console.log(response);
     setValue("hash", response.data.Hash);
-    toast("uploaded successfully");
+    toast("File uploaded successfully");
     // console.log(
     //   "Visit at https://gateway.lighthouse.storage/ipfs/" + output.data.Hash
     // );

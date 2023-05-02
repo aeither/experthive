@@ -85,7 +85,7 @@ export function MakeDealButton() {
     <div>
       {proposingDeal && <span>Loading...</span>}
       <div style={{ color: "green" }}> {txSubmitted} </div>
-      <button onClick={makeDeal}>Make Deal</button>
+      {/* <button onClick={makeDeal}>Make Deal</button> */}
       {/* <button disabled={!write} onClick={() => write && write()}>
         Make Deal
       </button>

@@ -152,9 +152,12 @@ const User = () => {
           className="mr-4 h-16 w-16 rounded-full"
         />
         <div className="flex flex-col items-start gap-2">
-          <p className="text-lg font-medium text-gray-800">
-            {shortenEthAddress(username as string)}
-          </p>
+          <div>
+            <p className="text-lg font-medium text-gray-800">
+              {shortenEthAddress(username as string)}
+            </p>
+            <p>Earnings: {data?.toString()}</p>
+          </div>
           {/* <p className="text-gray-500">{username}</p> */}
           <PortfolioDialog />
         </div>
