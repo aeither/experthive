@@ -8,6 +8,7 @@ import { nowknownAbi } from "~/lib/nowknownAbi";
 import { nowknownAddress } from "~/utils/constants";
 import lighthouse from "@lighthouse-web3/sdk";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 type FormData = {
   title: string;
@@ -52,6 +53,8 @@ const BookingForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { address } = useAccount();
   const [roomId, setRoomId] = useState<string>();
+  const router = useRouter();
+  const { username } = router.query;
 
   const { saveBuyCall } = useDB();
 
@@ -59,7 +62,7 @@ const BookingForm = () => {
     address: nowknownAddress,
     abi: nowknownAbi,
     functionName: "scheduleCall",
-    args: [address || "0xtest", address || "0xtest"],
+    args: [(username as `0x${string}`) || "0xtest", address || "0xtest"],
     overrides: { value: utils.parseEther("0.01") },
   });
 
