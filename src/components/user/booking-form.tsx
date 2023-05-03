@@ -192,20 +192,19 @@ const BookingSuccess = ({ roomId }: { roomId: string }) => {
       <p className="mb-4 text-lg font-medium text-gray-800">
         Your booking has been confirmed!
       </p>
-      <Link href={`/rec/${roomId}`}>
+      <div className="flex w-full flex-row justify-center gap-2">
+        <Link href={`/rec/${roomId}`}>
+          <button className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+            Open Meeting URL
+          </button>
+        </Link>
         <button
-          className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
           onClick={() => window.location.reload()}
+          className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-blue-600"
         >
           Close
         </button>
-      </Link>
-      <button
-        className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-        onClick={() => window.location.reload()}
-      >
-        Close
-      </button>
+      </div>
     </div>
   );
 };

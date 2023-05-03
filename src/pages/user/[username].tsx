@@ -1,4 +1,5 @@
 import lighthouse from "@lighthouse-web3/sdk";
+import { CollectionRecordResponse } from "@polybase/client";
 import { usePolybase } from "@polybase/react";
 import { ethers, utils } from "ethers";
 import { verifyMessage } from "ethers/lib/utils";
@@ -17,7 +18,7 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import PortfolioDialog from "~/components/user/portfolio-dialog";
-import { FileData, useDB } from "~/hooks/use-db";
+import { CallData, FileData, RequestData, useDB } from "~/hooks/use-db";
 import { nowknownAbi } from "~/lib/nowknownAbi";
 import { shortenEthAddress } from "~/lib/utils";
 import { nowknownAddress } from "~/utils/constants";
@@ -116,6 +117,101 @@ const FileGridItem = ({ fileData }: { fileData: FileData }) => {
   );
 };
 
+const CallItem = ({ item }: { item: CollectionRecordResponse<CallData> }) => {
+  const { address } = useAccount();
+  const router = useRouter();
+
+  const { config: startCallConfig } = usePrepareContractWrite({
+    address: nowknownAddress,
+    abi: nowknownAbi,
+    functionName: "startCall",
+    args: [
+      address || "0xtest",
+      (item.data.participant as `0x${string}`) || "0xtest",
+    ],
+  });
+  const startCall = useContractWrite(startCallConfig);
+
+  const { config: completeCallConfig } = usePrepareContractWrite({
+    address: nowknownAddress,
+    abi: nowknownAbi,
+    functionName: "completeCall",
+    args: [
+      address || "0xtest",
+      (item.data.participant as `0x${string}`) || "0xtest",
+    ],
+  });
+  const completeCall = useContractWrite(completeCallConfig);
+  // const handleReject = (id: string) => {
+  //   console.log(`Rejected call with ID ${id}`);
+  // };
+
+  const handleStartCall = async (participant: string) => {
+    if (!startCall.writeAsync) return;
+    await startCall.writeAsync();
+
+    router.push(`/rec/${item.data.room}`);
+  };
+
+  const handleCompleteCall = async (participant: string) => {
+    if (!completeCall.writeAsync) return;
+    await completeCall.writeAsync();
+  };
+
+  return (
+    <>
+      <div
+        key={item.data.id}
+        className="flex w-full flex-col rounded-lg border bg-white p-4 hover:shadow-md"
+      >
+        <div>
+          <Badge variant="outline">{item.data.status}</Badge>
+        </div>
+
+        <h3 className="mb-2 text-lg font-medium text-gray-800">
+          {item.data.title}
+        </h3>
+        <p className="text-gray-500">{item.data.room}</p>
+        <p className="text-gray-600">{item.data.date}</p>
+        <p className="mb-4 text-gray-600">{item.data.description}</p>
+        {/* {activeCallId !== item.data.id ? ( */}
+        <div className="flex w-full flex-col gap-2">
+          {/* <Button
+                  variant={"destructive"}
+                  onClick={() => handleReject(item.data.id)}
+                >
+                  Reject
+                </Button> */}
+          <div className="flex w-full flex-col gap-2">
+            {/* <Link className="w-full" href={`/rec/${item.data.room}`}> */}
+            <Button
+              className="w-full"
+              onClick={() => handleStartCall(item.data.participant)}
+            >
+              Start
+            </Button>
+            {/* </Link> */}
+            <Button
+              variant={"outline"}
+              onClick={() => handleCompleteCall(item.data.participant)}
+            >
+              Complete
+            </Button>
+          </div>
+        </div>
+        {/* ) : ( */}
+        {/* <Button
+                variant={"destructive"}
+                // onClick={() => handleCompleteCall(item.data.id)}
+              >
+                Complete
+              </Button> */}
+        {/* )} */}
+      </div>
+    </>
+  );
+};
+
 const User = () => {
   const router = useRouter();
   const { username } = router.query;
@@ -129,23 +225,6 @@ const User = () => {
     functionName: "earnings",
     args: [address || "0x"],
   });
-
-  const { config, error, isError } = usePrepareContractWrite({
-    address: nowknownAddress,
-    abi: nowknownAbi,
-    functionName: "startCall",
-    args: [address || "0xtest", address || "0xtest"],
-  });
-  const { writeAsync } = useContractWrite(config);
-  const handleReject = (id: string) => {
-    console.log(`Rejected call with ID ${id}`);
-  };
-
-  const handleStartCall = async (id: string) => {
-    console.log(`Started call with ID ${id}`);
-    if (!writeAsync) return;
-    await writeAsync();
-  };
 
   return (
     <div className="mx-auto min-h-[calc(100vh-64px)] w-full max-w-lg pt-4">
@@ -166,9 +245,8 @@ const User = () => {
           </div>
           {/* <p className="text-gray-500">{username}</p> */}
           <div className="flex gap-2">
-
-          <PortfolioDialog />
-          <Button onClick={() => {}}>Withdraw earnings</Button>
+            <PortfolioDialog />
+            <Button onClick={() => {}}>Withdraw earnings</Button>
           </div>
         </div>
       </div>
@@ -176,50 +254,7 @@ const User = () => {
       <h2 className="mb-4 text-lg font-medium text-gray-800">Calls</h2>
       <div className="grid grid-cols-2 gap-4 pb-4">
         {myCalls &&
-          myCalls.map((item) => (
-            <div
-              key={item.data.id}
-              className="flex w-full flex-col rounded-lg border bg-white p-4 hover:shadow-md"
-            >
-              <div>
-                <Badge variant="outline">{item.data.status}</Badge>
-              </div>
-
-              <h3 className="mb-2 text-lg font-medium text-gray-800">
-                {item.data.title}
-              </h3>
-              <p className="text-gray-500">{item.data.room}</p>
-              <p className="text-gray-600">{item.data.date}</p>
-              <p className="mb-4 text-gray-600">{item.data.description}</p>
-              {/* {activeCallId !== item.data.id ? ( */}
-              <div className="flex w-full flex-col gap-2">
-                {/* <Button
-                  variant={"destructive"}
-                  onClick={() => handleReject(item.data.id)}
-                >
-                  Reject
-                </Button> */}
-                <div className="flex w-full">
-                  <Link className="w-full" href={`/rec/${item.data.room}`}>
-                    <Button
-                      className="w-full"
-                      onClick={() => handleStartCall(item.data.room)}
-                    >
-                      Start
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-              {/* ) : ( */}
-              {/* <Button
-                variant={"destructive"}
-                // onClick={() => handleCompleteCall(item.data.id)}
-              >
-                Complete
-              </Button> */}
-              {/* )} */}
-            </div>
-          ))}
+          myCalls.map((item) => <CallItem item={item} key={item.data.id} />)}
       </div>
 
       <h2 className="mb-4 text-lg font-medium text-gray-800">Requests</h2>

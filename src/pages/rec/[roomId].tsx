@@ -17,6 +17,11 @@ import {
 import { useDisplayName } from "@huddle01/react/app-utils";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "next/router";
+import { useAccount, useContractRead } from "wagmi";
+import { nowknownAddress } from "~/utils/constants";
+import { nowknownAbi } from "~/lib/nowknownAbi";
+import { useCollection, usePolybase } from "@polybase/react";
+import { CallData } from "~/hooks/use-db";
 
 if (!process.env.NEXT_PUBLIC_HUDDLE01_PROJECT_ID)
   throw new Error("NEXT_PUBLIC_HUDDLE01_PROJECT_ID not found");
@@ -51,6 +56,20 @@ const App = () => {
   } = useVideo();
   const { joinRoom, leaveRoom } = useRoom();
   const { peerIds, peers } = usePeers();
+  const polybase = usePolybase();
+  const { address } = useAccount();
+  const currentCall = useCollection<CallData>(
+    address ? polybase.collection("Call").where("room", "==", roomId) : null
+  );
+  console.log("🚀 ~ file: [roomId].tsx:64 ~ App ~ currentCall:", currentCall);
+
+  const { data } = useContractRead({
+    address: nowknownAddress,
+    abi: nowknownAbi,
+    functionName: "access",
+    args: [address || "0x", address || "0x"],
+  });
+  console.log("🚀 ~ file: [roomId].tsx:64 ~ App ~ data:", data);
 
   // Event Listner
   useEventListener("lobby:cam-on", () => {
@@ -88,9 +107,9 @@ const App = () => {
   }, [joinLobby.isCallable, roomId]);
 
   return (
-    <div className=" container grid grid-cols-1  place-items-center">
+    <div className=" container grid min-h-[calc(100vh-224px)]  grid-cols-1 place-items-center">
       <div className="grid grid-cols-2 place-items-center gap-4">
-        <div>
+        <div className="flex w-full flex-col">
           <div className="break-words">
             Joining as {JSON.stringify(state.context.displayName)}
           </div>
@@ -100,13 +119,13 @@ const App = () => {
           </div>
         </div>
 
-        <div>
+        <div className="flex w-full flex-col">
           {Object.values(peers)
             .filter((peer) => peer.cam)
             .map((peer) => (
               <div className="flex w-full flex-col">
-                {peer.role}
-                <div className="flex w-full overflow-clip rounded-lg">
+                <div>{peer.role}</div>
+                <div className="flex w-full flex-col overflow-clip rounded-lg">
                   <Video
                     key={peer.peerId}
                     peerId={peer.peerId}
@@ -188,7 +207,11 @@ const App = () => {
                 </Button>
               )}
 
-              <Button disabled={!joinRoom.isCallable} onClick={joinRoom}>
+              <Button
+                className="bg-blue-500"
+                disabled={!joinRoom.isCallable}
+                onClick={joinRoom}
+              >
                 Join Call
               </Button>
             </div>
@@ -262,7 +285,7 @@ const App = () => {
             </Button>
           </div>
         )}
-
+        {/* 
         <h2 className="text-2xl">Room State</h2>
         <h3 className="break-words">{JSON.stringify(state.value)}</h3>
 
@@ -286,7 +309,7 @@ const App = () => {
         <h2 className="text-2xl">Consumers</h2>
         <div className="break-words">
           {JSON.stringify(state.context.consumers)}
-        </div>
+        </div> */}
       </div>
     </div>
   );
