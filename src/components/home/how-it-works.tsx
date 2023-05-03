@@ -1,6 +1,6 @@
 const HowItWorks = () => {
   return (
-    <div className="flex w-full flex-col bg-gray-100 py-8">
+    <div className="flex w-full flex-col bg-blue-600 text-white py-8">
       <h2 className="mb-8 text-center text-3xl font-bold">How it works</h2>
       <div className="mx-4 flex justify-between">
         <div className="w-full py-8 text-center md:w-1/3">

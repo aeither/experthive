@@ -1,7 +1,8 @@
 import lighthouse from "@lighthouse-web3/sdk";
 import { usePolybase } from "@polybase/react";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
 import { verifyMessage } from "ethers/lib/utils";
+import { Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -21,8 +22,18 @@ import { nowknownAbi } from "~/lib/nowknownAbi";
 import { shortenEthAddress } from "~/lib/utils";
 import { nowknownAddress } from "~/utils/constants";
 
+const signAuthMessage = async () => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+  const signer = provider.getSigner();
+  const publicKey = (await signer.getAddress()).toLowerCase();
+  const messageRequested = (await lighthouse.getAuthMessage(publicKey)).data
+    .message;
+  const signedMessage = await signer.signMessage(messageRequested);
+  return { publicKey: publicKey, signedMessage: signedMessage };
+};
+
 const FileGridItem = ({ fileData }: { fileData: FileData }) => {
-  const { title, hash, signedMessage } = fileData;
+  const { title, hash, signedMessage, description, users } = fileData;
 
   const [fileURL, setFileURL] = React.useState<string | null>(null);
   const { address } = useAccount();
@@ -97,14 +108,9 @@ const FileGridItem = ({ fileData }: { fileData: FileData }) => {
   return (
     <>
       <div className="flex w-full flex-col gap-2 rounded-lg border p-4 hover:shadow">
-        <div>{title}</div>
-        {fileURL ? (
-          <a className="underline" href={fileURL} target="_blank">
-            Open File
-          </a>
-        ) : (
-          <Button onClick={() => decrypt()}>Request</Button>
-        )}
+        <div className="text-lg font-bold">{title}</div>
+        <div>{description}</div>
+        {/* {users.map( (user) => (<>{}</>))} */}
       </div>
     </>
   );
@@ -154,10 +160,16 @@ const User = () => {
             <p className="text-lg font-medium text-gray-800">
               {shortenEthAddress(username as string)}
             </p>
-            <p>Earnings: {data?.toString()}</p>
+            <p>
+              Earnings: {ethers.utils.formatEther(data?.toString() || 0)} Eth
+            </p>
           </div>
           {/* <p className="text-gray-500">{username}</p> */}
+          <div className="flex gap-2">
+
           <PortfolioDialog />
+          <Button onClick={() => {}}>Withdraw earnings</Button>
+          </div>
         </div>
       </div>
 
@@ -220,19 +232,29 @@ const User = () => {
                 className="flex w-full flex-col rounded-lg border bg-white p-4 hover:shadow-md"
               >
                 <h3 className="mb-2 text-lg font-medium text-gray-800">
-                  {item.data.user}
+                  {item.data.id}
                 </h3>
+                <div>{shortenEthAddress(item.data.user)}</div>
 
                 <div className="flex w-full flex-col gap-2">
                   <div className="flex w-full">
                     <Button
                       className="w-full"
                       onClick={async () => {
+                        console.log(item.data);
+                        const { publicKey, signedMessage } =
+                          await signAuthMessage();
+                        console.log(
+                          "🚀 ~ file: [username].tsx:238 ~ onClick={ ~ publicKey, signedMessage:",
+                          publicKey,
+                          signedMessage
+                        );
+
                         const res = await lighthouse.shareFile(
-                          item.data.owner,
+                          publicKey,
                           [item.data.user],
                           item.data.hash,
-                          item.data.signedMessage
+                          signedMessage
                         );
 
                         // await polybase
