@@ -54,26 +54,7 @@ const FileGridItem = ({
       toast("sign in first");
       return;
     }
-
-    /**
-     * Check if unlocked, if not. pay to contract which and wait
-     */
-    if (!fileData.users.includes(address)) {
-      // pay contract
-      if (!writeAsync) return;
-      await writeAsync();
-
-      // create new request item to db with status pending
-      await buyResource({
-        hash: fileData.hash,
-        owner: fileData.owner,
-        signedMessage: fileData.signedMessage,
-        user: address,
-      });
-
-      toast("Resource Requested");
-      return;
-    }
+    console.log("hello decrypt");
 
     /**
      * Get Signed Message
@@ -99,6 +80,7 @@ const FileGridItem = ({
     );
     if (!keyObject || !keyObject.data || !keyObject.data.key) {
     }
+
     // Decrypt file
     /*
       decryptFile(cid, key, mimeType)
@@ -125,6 +107,33 @@ const FileGridItem = ({
     setFileURL(url);
   };
 
+  const payResource = async () => {
+    if (!address) {
+      toast("sign in first");
+      return;
+    }
+
+    /**
+     * Check if unlocked, if not. pay to contract which and wait
+     */
+    if (!fileData.users.includes(address)) {
+      // pay contract
+      if (!writeAsync) return;
+      await writeAsync();
+
+      // create new request item to db with status pending
+      await buyResource({
+        hash: fileData.hash,
+        owner: fileData.owner,
+        signedMessage: fileData.signedMessage,
+        user: address,
+      });
+
+      toast("Resource Requested");
+      return;
+    }
+  };
+
   return (
     <>
       <div className="flex w-full flex-col gap-2 rounded-lg border p-4 hover:shadow">
@@ -134,7 +143,10 @@ const FileGridItem = ({
             Open File
           </a>
         ) : (
-          <Button onClick={() => decrypt()}>Request</Button>
+          <>
+            <Button onClick={async () => await payResource()}>Request</Button>
+            <Button onClick={async () => await decrypt()}>Open</Button>
+          </>
         )}
       </div>
     </>
