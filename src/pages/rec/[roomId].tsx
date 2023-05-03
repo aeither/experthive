@@ -67,7 +67,10 @@ const App = () => {
     address: nowknownAddress,
     abi: nowknownAbi,
     functionName: "access",
-    args: [address || "0x", address || "0x"],
+    args: [
+      (currentCall.data?.data[0]?.data.expert as `0x${string}`) || "0x",
+      address || "0x",
+    ],
   });
   console.log("🚀 ~ file: [roomId].tsx:64 ~ App ~ data:", data);
 
@@ -105,6 +108,15 @@ const App = () => {
       joinLobby(roomId);
     }
   }, [joinLobby.isCallable, roomId]);
+
+  // waiting for expert to start call and turn on access
+  // if (data === false) {
+  //   return (
+  //     <>
+  //       <p>You are not authorized.</p>
+  //     </>
+  //   );
+  // }
 
   return (
     <div className=" container grid min-h-[calc(100vh-224px)]  grid-cols-1 place-items-center">
