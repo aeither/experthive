@@ -111,7 +111,7 @@ const BookingForm = () => {
       title,
       description,
       date,
-      expert: address || "0xtest",
+      expert: (username as `0x${string}`) || "0xtest",
       participant: address || "0xtest",
       room: roomData.roomId,
       status: "Bought",
